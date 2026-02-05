@@ -1,8 +1,6 @@
-import { useJobs } from "../hooks/useJobs.js";
 import { JobCard } from "./JobCard.jsx";
 
-export function JobListings() {
-  const { jobs, loading, error } = useJobs();
+export function JobListings({ jobs, loading, error }) {
   return (
     <>
       <h2>Resultados de búsqueda</h2>

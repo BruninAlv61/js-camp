@@ -7,8 +7,8 @@ export function JobCard({ data, titulo, empresa, ubicacion, descripcion }) {
     setIsApplied(!isApplied);
   };
 
-  const text = isApplied ? "Aplicado" : "Aplicar";
-  const buttonClass = isApplied ? "is-applied" : "";
+  const buttonClasses = isApplied ? "button-apply-job is-applied" : "button-apply-job";
+  const buttonText = isApplied ? "Aplicado" : "Aplicar";
 
   return (
     <article
@@ -26,10 +26,10 @@ export function JobCard({ data, titulo, empresa, ubicacion, descripcion }) {
       </div>
       <button
         disabled={isApplied}
-        className={`button-apply-job ${buttonClass}`}
+        className={`button-apply-job ${buttonClasses}`}
         onClick={handleClick}
       >
-        {text}
+        {buttonText}
       </button>
     </article>
   );

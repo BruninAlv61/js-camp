@@ -1,8 +1,7 @@
 import { useState } from "react";
-
 import { Header } from "./components/Header.jsx";
 import { Footer } from "./components/Footer.jsx";
-import { JobsSearch } from "./components/JobsSearch.jsx";
+import { SearchFormSection } from "./components/SearchFormSection.jsx";
 import { Pagination } from "./components/Pagination.jsx";
 import { JobListings } from "./components/JobListings.jsx";
 
@@ -11,12 +10,31 @@ import { useJobs } from "./hooks/useJobs.js";
 const RESULTS_PER_PAGE = 5
 
 function App() {
-  const [currentPage, setCurrentPage] = useState(1)
-  
   const { jobs, loading, error } = useJobs();
-  const totalPages = Math.ceil(jobs.length / RESULTS_PER_PAGE)
 
-  const pagedResults = jobs.slice(
+  const [filters, setFilters] = useState({
+    technology: '',
+    location: '',
+    experienceLevel: ''
+  })
+  const [textToFilter, setTextToFilter] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const jobsFilteredByFilters = jobs.filter(job => {
+    return (
+      (filters.technology === '' || job.data.technology.includes(filters.technology.toLowerCase()))
+    )
+  })
+  
+  const jobsWithTextToFilter = textToFilter === ''
+  ? jobsFilteredByFilters
+  : jobsFilteredByFilters.filter(job => {
+    return job.titulo.toLowerCase().trim().includes(textToFilter.toLowerCase().trim())
+  })
+
+  const totalPages = Math.ceil(jobsWithTextToFilter.length / RESULTS_PER_PAGE)
+  
+  const pagedResults = jobsWithTextToFilter.slice(
     (currentPage - 1) * RESULTS_PER_PAGE, //Página 1 -> 0, Página 2 -> 5, Página 3 -> 10
     currentPage * RESULTS_PER_PAGE        // Página 1 -> 5, Página 2 -> 10, Página 3 -> 15
   )
@@ -24,8 +42,17 @@ function App() {
   console.log(pagedResults)
   
   const handlePageChange = (page) => {
-    console.log('Cambiando la página: ', page)
     setCurrentPage(page)
+  }
+
+  const handleSearch = (newFilters) => {
+    setFilters(newFilters)
+    setCurrentPage(1)
+  }
+
+  const handleTextFilter = (newTextToFilter) => {
+    setTextToFilter(newTextToFilter)
+    setCurrentPage(1)
   }
 
   return (
@@ -33,7 +60,7 @@ function App() {
       <Header />
 
       <main>
-        <JobsSearch />
+        <SearchFormSection onSearch={handleSearch} onTextFilter={handleTextFilter}/>
 
         <section>
           <JobListings jobs={pagedResults} loading={loading} error={error}/>

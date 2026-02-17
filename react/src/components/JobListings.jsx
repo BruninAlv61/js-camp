@@ -3,7 +3,7 @@ import { JobCard } from "./JobCard.jsx";
 export function JobListings({ jobs, loading, error }) {
   return (
     <>
-      <h2>Resultados de búsqueda</h2>
+      <h2 style={{ textAlign: "center"}}>Resultados de búsqueda</h2>
       <div className="jobs-listings">
         {loading && <p>Cargando...</p>}
         {error && <p>Error al cargar las ofertas</p>}

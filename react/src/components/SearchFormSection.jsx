@@ -1,6 +1,32 @@
 import { useId, useState } from "react"
 
-export function SearchFormSection({ onSearch}) {
+const useSearchForm = ({ idTechnology, idLocation, idExperienceLevel, onSearch, onTextFilter}) => {
+  const [searchText, setSearchText] = useState("")
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+
+    const formData = new FormData(event.currentTarget)
+  
+    const filters = {
+      technology: formData.get(idTechnology),
+      location: formData.get(idLocation),
+      experienceLevel: formData.get(idExperienceLevel)
+    }
+  
+    onSearch(filters)
+  }
+
+  const handleTextChange = (event) => {
+    const text = event.target.value
+    setSearchText(text)
+    onTextFilter(text)
+  }
+
+  return { searchText, handleSubmit, handleTextChange }
+}
+
+export function SearchFormSection({ onTextFilter, onSearch }) {
   const [focusedField, setFocusedField] = useState(null)
 
   const idText = useId()
@@ -8,19 +34,11 @@ export function SearchFormSection({ onSearch}) {
   const idLocation = useId()
   const idExperienceLevel = useId()
 
-  const handleChange = (event) => {
+  const {
+    handleSubmit,
+    handleTextChange
+  } = useSearchForm({ idTechnology, idLocation, idExperienceLevel, onSearch, onTextFilter })
 
-    const formData = new FormData(event.currentTarget)
-
-    const filters = {
-      search: formData.get(idText),
-      technology: formData.get(idTechnology),
-      location: formData.get(idLocation),
-      experienceLevel: formData.get(idExperienceLevel)
-    }
-
-    onSearch(filters)
-  }
 
   const inputStyleFocus = focusedField ? 'solid 5px #0d3f6e' : 'none'
 
@@ -30,7 +48,7 @@ export function SearchFormSection({ onSearch}) {
       <h1>Encuentra tu próximo trabajo</h1>
       <p>Explora miles de oportunidades en el sector tecnológico.</p>
 
-      <form onChange={handleChange} id="empleos-search-form" role="search">
+      <form onChange={handleSubmit} id="empleos-search-form" role="search">
         <div className="search-bar" style={{border: inputStyleFocus}}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -53,6 +71,7 @@ export function SearchFormSection({ onSearch}) {
             id="empleos-search-input"
             type="text"
             placeholder="Buscar trabajos, empresas o habilidades"
+            onChange={handleTextChange}
             onFocus={() => { setFocusedField(true)}}
             onBlur={() => { setFocusedField(false)}}
           />

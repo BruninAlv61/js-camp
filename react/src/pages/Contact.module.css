@@ -1,0 +1,58 @@
+.contactHeader {
+  display: grid;
+
+  .contactTitle {
+    font-size: 3rem;
+
+    .contactSpan {
+      color: var(--primary-light);
+    }
+  }
+
+  .contactParagraph {
+    font-size: 1.3rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+  }
+}
+
+.contactForm {
+  display: grid;
+  background-color: #101826;
+  padding: 2rem;
+  width: calc(100% - 2rem);
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px var(--shadow);
+  gap: 1rem;
+
+  .contactInput {
+    background-color: #1e293b;
+    border: none;
+    padding: 1rem;
+    border-radius: 0.5rem;
+  }
+
+  .contactTextarea {
+    resize: none;
+    height: 5rem;
+  }
+
+  .contactButton {
+    background-color: #1273d4;
+    color: white;
+    border: none;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 0px 8px 0px #1273d4;
+    transition: all 0.2s;
+  }
+}
+
+.contactParagraph {
+  font-size: 1.3rem;
+  line-height: 1.5;
+  text-align: center;
+}

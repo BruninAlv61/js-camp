@@ -9,19 +9,32 @@ import { useJobs } from "../hooks/useJobs.js";
 const RESULTS_PER_PAGE = 5;
 
 const useFilters = () => {
-  const [filters, setFilters] = useState({
-    technology: "",
-    location: "",
-    experienceLevel: "",
-  });
+  const [filters, setFilters] = useState(
+    JSON.parse(localStorage.getItem("filters")) || {
+      technology: "",
+      location: "",
+      experienceLevel: "",
+    },
+  );
 
-  const [textToFilter, setTextToFilter] = useState("");
+  const [hasActiveFilters, setHasActiveFilters] = useState(
+    localStorage.getItem("hasActiveFilters") === "true",
+  );
 
-  const { jobs, total, loading, error } = useJobs({ textToFilter, filters });
+  const [textToFilter, setTextToFilter] = useState(
+    localStorage.getItem("textToFilter") || "",
+  );
 
   const [currentPage, setCurrentPage] = useState(1);
 
-  const totalPages = Math.ceil(jobs.length / RESULTS_PER_PAGE);
+  const { jobs, total, loading, error } = useJobs({
+    textToFilter,
+    filters,
+    currentPage,
+    RESULTS_PER_PAGE,
+  });
+
+  const totalPages = Math.ceil(total / RESULTS_PER_PAGE);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -29,12 +42,44 @@ const useFilters = () => {
 
   const handleSearch = (newFilters) => {
     setFilters(newFilters);
+    localStorage.setItem("filters", JSON.stringify(newFilters));
     setCurrentPage(1);
+    if (
+      textToFilter == "" &&
+      newFilters.technology == "" &&
+      newFilters.location == "" &&
+      newFilters.experienceLevel == ""
+    ) {
+      setHasActiveFilters(false);
+      localStorage.removeItem("hasActiveFilters");
+      return;
+    }
+    setHasActiveFilters(true);
+    localStorage.setItem("hasActiveFilters", true);
   };
 
   const handleTextFilter = (newTextToFilter) => {
     setTextToFilter(newTextToFilter);
+    localStorage.setItem("textToFilter", newTextToFilter);
     setCurrentPage(1);
+    setHasActiveFilters(true);
+    localStorage.setItem("hasActiveFilters", true);
+  };
+
+  const handleClearFilters = () => {
+    if (hasActiveFilters) {
+      setFilters({
+        technology: "",
+        location: "",
+        experienceLevel: "",
+      });
+      setTextToFilter("");
+      localStorage.removeItem("filters");
+      localStorage.removeItem("textToFilter");
+      setCurrentPage(1);
+      setHasActiveFilters(false);
+      localStorage.removeItem("hasActiveFilters");
+    }
   };
 
   return {
@@ -47,6 +92,10 @@ const useFilters = () => {
     handlePageChange,
     handleSearch,
     handleTextFilter,
+    handleClearFilters,
+    hasActiveFilters,
+    filters,
+    textToFilter,
   };
 };
 
@@ -61,6 +110,10 @@ export function SearchPage() {
     handlePageChange,
     handleSearch,
     handleTextFilter,
+    handleClearFilters,
+    hasActiveFilters,
+    filters,
+    textToFilter,
   } = useFilters();
 
   useEffect(() => {
@@ -72,6 +125,10 @@ export function SearchPage() {
       <SearchFormSection
         onSearch={handleSearch}
         onTextFilter={handleTextFilter}
+        onClearFilters={handleClearFilters}
+        hasActiveFilters={hasActiveFilters}
+        filters={filters}
+        textToFilter={textToFilter}
       />
 
       <section>

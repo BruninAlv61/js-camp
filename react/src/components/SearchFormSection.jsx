@@ -1,47 +1,73 @@
-import { useId, useState } from "react"
+import { useId, useState } from "react";
 
-const useSearchForm = ({ idTechnology, idLocation, idExperienceLevel, onSearch, onTextFilter}) => {
-  const [searchText, setSearchText] = useState("")
-
+const useSearchForm = ({
+  idTechnology,
+  idLocation,
+  idExperienceLevel,
+  onSearch,
+  onTextFilter,
+  onClearFilters,
+}) => {
   const handleSubmit = (event) => {
-    event.preventDefault()
+    event.preventDefault();
 
-    const formData = new FormData(event.currentTarget)
-  
+    const formData = new FormData(event.currentTarget);
+
     const filters = {
       technology: formData.get(idTechnology),
       location: formData.get(idLocation),
-      experienceLevel: formData.get(idExperienceLevel)
-    }
-  
-    onSearch(filters)
-  }
+      experienceLevel: formData.get(idExperienceLevel),
+    };
+
+    onSearch(filters);
+  };
 
   const handleTextChange = (event) => {
-    const text = event.target.value
-    setSearchText(text)
-    onTextFilter(text)
-  }
+    const text = event.target.value;
+    onTextFilter(text);
+  };
 
-  return { searchText, handleSubmit, handleTextChange }
-}
+  const handleClearFiltersClick = (event) => {
+    event.preventDefault();
+    onClearFilters();
 
-export function SearchFormSection({ onTextFilter, onSearch }) {
-  const [focusedField, setFocusedField] = useState(null)
+    const form = document.getElementById("empleos-search-form");
+    form.reset();
+  };
 
-  const idText = useId()
-  const idTechnology = useId()
-  const idLocation = useId()
-  const idExperienceLevel = useId()
-
-  const {
+  return {
     handleSubmit,
-    handleTextChange
-  } = useSearchForm({ idTechnology, idLocation, idExperienceLevel, onSearch, onTextFilter })
+    handleTextChange,
+    handleClearFiltersClick,
+  };
+};
 
+export function SearchFormSection({
+  onTextFilter,
+  onSearch,
+  onClearFilters,
+  hasActiveFilters,
+  filters,
+  textToFilter,
+}) {
+  const [focusedField, setFocusedField] = useState(null);
 
-  const inputStyleFocus = focusedField ? 'solid 5px #0d3f6e' : 'none'
+  const idText = useId();
+  const idTechnology = useId();
+  const idLocation = useId();
+  const idExperienceLevel = useId();
 
+  const { handleSubmit, handleTextChange, handleClearFiltersClick } =
+    useSearchForm({
+      idTechnology,
+      idLocation,
+      idExperienceLevel,
+      onSearch,
+      onTextFilter,
+      onClearFilters,
+    });
+
+  const inputStyleFocus = focusedField ? "solid 5px #0d3f6e" : "none";
 
   return (
     <section className="jobs-search">
@@ -49,7 +75,7 @@ export function SearchFormSection({ onTextFilter, onSearch }) {
       <p>Explora miles de oportunidades en el sector tecnológico.</p>
 
       <form onChange={handleSubmit} id="empleos-search-form" role="search">
-        <div className="search-bar" style={{border: inputStyleFocus}}>
+        <div className="search-bar" style={{ border: inputStyleFocus }}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -67,18 +93,27 @@ export function SearchFormSection({ onTextFilter, onSearch }) {
             <path d="M21 21l-6 -6" />
           </svg>
           <input
+            defaultValue={textToFilter}
             name={idText}
             id="empleos-search-input"
             type="text"
             placeholder="Buscar trabajos, empresas o habilidades"
             onChange={handleTextChange}
-            onFocus={() => { setFocusedField(true)}}
-            onBlur={() => { setFocusedField(false)}}
+            onFocus={() => {
+              setFocusedField(true);
+            }}
+            onBlur={() => {
+              setFocusedField(false);
+            }}
           />
         </div>
 
         <div className="search-filters">
-          <select name={idTechnology} id="filter-technology">
+          <select
+            value={filters.technology}
+            name={idTechnology}
+            id="filter-technology"
+          >
             <option value="">Tecnología</option>
             <optgroup label="Tecnologías populares">
               <option value="javascript">JavaScript</option>
@@ -96,7 +131,11 @@ export function SearchFormSection({ onTextFilter, onSearch }) {
             <option value="php">PHP</option>
           </select>
 
-          <select name={idLocation} id="filter-location">
+          <select
+            value={filters.location}
+            name={idLocation}
+            id="filter-location"
+          >
             <option value="">Ubicación</option>
             <option value="remoto">Remoto</option>
             <option value="cdmx">Ciudad de México</option>
@@ -105,13 +144,21 @@ export function SearchFormSection({ onTextFilter, onSearch }) {
             <option value="barcelona">Barcelona</option>
           </select>
 
-          <select name={idExperienceLevel} id="filter-experience-level">
+          <select
+            value={filters.experienceLevel}
+            name={idExperienceLevel}
+            id="filter-experience-level"
+          >
             <option value="">Nivel de experiencia</option>
             <option value="junior">Junior</option>
             <option value="mid">Mid-level</option>
             <option value="senior">Senior</option>
             <option value="lead">Lead</option>
           </select>
+
+          {hasActiveFilters && (
+            <button onClick={handleClearFiltersClick}>Limpiar filtros</button>
+          )}
         </div>
       </form>
 

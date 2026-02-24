@@ -1,17 +1,22 @@
-import { useId, useState } from "react";
+import { useId, useState, useRef } from "react";
 
 const useSearchForm = ({
   idTechnology,
   idLocation,
   idExperienceLevel,
+  idText,
   onSearch,
   onTextFilter,
   onClearFilters,
 }) => {
+  const timeoutId = useRef(null);
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
+
+    if (event.target.name === idText) return;
 
     const filters = {
       technology: formData.get(idTechnology),
@@ -24,15 +29,18 @@ const useSearchForm = ({
 
   const handleTextChange = (event) => {
     const text = event.target.value;
-    onTextFilter(text);
+
+    if (timeoutId.current) {
+      clearTimeout(timeoutId.current);
+    }
+    timeoutId.current = setTimeout(() => {
+      onTextFilter(text);
+    }, 500);
   };
 
   const handleClearFiltersClick = (event) => {
     event.preventDefault();
     onClearFilters();
-
-    const form = document.getElementById("empleos-search-form");
-    form.reset();
   };
 
   return {
@@ -62,6 +70,7 @@ export function SearchFormSection({
       idTechnology,
       idLocation,
       idExperienceLevel,
+      idText,
       onSearch,
       onTextFilter,
       onClearFilters,

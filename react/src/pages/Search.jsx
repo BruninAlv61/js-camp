@@ -1,31 +1,48 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import { SearchFormSection } from "../components/SearchFormSection.jsx";
 import { Pagination } from "../components/Pagination.jsx";
 import { JobListings } from "../components/JobListings.jsx";
 
 import { useJobs } from "../hooks/useJobs.js";
+import { useEffect } from "react";
+import { useRouter } from "../hooks/useRouter.js";
 
 const RESULTS_PER_PAGE = 5;
 
 const useFilters = () => {
-  const [filters, setFilters] = useState(
-    JSON.parse(localStorage.getItem("filters")) || {
-      technology: "",
-      location: "",
-      experienceLevel: "",
-    },
-  );
+  const [filters, setFilters] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return {
+      technology: params.get("technology") || "",
+      location: params.get("location") || "",
+      experienceLevel: params.get("experienceLevel") || "",
+    };
+  });
 
-  const [hasActiveFilters, setHasActiveFilters] = useState(
-    localStorage.getItem("hasActiveFilters") === "true",
-  );
+  const [hasActiveFilters, setHasActiveFilters] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (
+      params.get("technology") ||
+      params.get("type") ||
+      params.get("level") ||
+      params.get("text")
+    ) {
+      return true;
+    }
+    return false;
+  });
 
-  const [textToFilter, setTextToFilter] = useState(
-    localStorage.getItem("textToFilter") || "",
-  );
+  const [textToFilter, setTextToFilter] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("text") || "";
+  });
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    const page = Number(params.get("page"));
+    return Number.isNaN(page) ? page : 1;
+  });
 
   const { jobs, total, loading, error } = useJobs({
     textToFilter,
@@ -33,6 +50,25 @@ const useFilters = () => {
     currentPage,
     RESULTS_PER_PAGE,
   });
+
+  const { navigateTo } = useRouter();
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+
+    if (textToFilter) params.append("text", textToFilter);
+    if (filters.technology) params.append("technology", filters.technology);
+    if (filters.location) params.append("type", filters.location);
+    if (filters.experienceLevel)
+      params.append("level", filters.experienceLevel);
+    if (currentPage > 1) params.append("page", currentPage);
+
+    const newUrl = params.toString()
+      ? `${window.location.pathname}?${params.toString()}`
+      : window.location.pathname;
+
+    navigateTo(newUrl);
+  }, [filters, currentPage, textToFilter, navigateTo]);
 
   const totalPages = Math.ceil(total / RESULTS_PER_PAGE);
 
@@ -60,8 +96,17 @@ const useFilters = () => {
 
   const handleTextFilter = (newTextToFilter) => {
     setTextToFilter(newTextToFilter);
-    localStorage.setItem("textToFilter", newTextToFilter);
     setCurrentPage(1);
+    if (
+      newTextToFilter === "" &&
+      filters.technology === "" &&
+      filters.location === "" &&
+      filters.experienceLevel === ""
+    ) {
+      setHasActiveFilters(false);
+      localStorage.removeItem("hasActiveFilters");
+      return;
+    }
     setHasActiveFilters(true);
     localStorage.setItem("hasActiveFilters", true);
   };
@@ -74,11 +119,8 @@ const useFilters = () => {
         experienceLevel: "",
       });
       setTextToFilter("");
-      localStorage.removeItem("filters");
-      localStorage.removeItem("textToFilter");
       setCurrentPage(1);
       setHasActiveFilters(false);
-      localStorage.removeItem("hasActiveFilters");
     }
   };
 
@@ -116,12 +158,14 @@ export function SearchPage() {
     textToFilter,
   } = useFilters();
 
-  useEffect(() => {
-    document.title = `Resultados: ${total}, Página ${currentPage} - DevJobs`;
-  }, [total, currentPage]);
+  const title = loading
+    ? "Cargando..."
+    : `Resultados: ${total}, Página ${currentPage} - DevJobs`;
 
   return (
     <main>
+      <title>{title}</title>
+      <meta name="description" content={title} />
       <SearchFormSection
         onSearch={handleSearch}
         onTextFilter={handleTextFilter}
@@ -132,6 +176,7 @@ export function SearchPage() {
       />
 
       <section>
+        <h2 style={{ textAlign: "center" }}>Resultados de búsqueda</h2>
         <JobListings jobs={jobs} loading={loading} error={error} />
         <Pagination
           currentPage={currentPage}

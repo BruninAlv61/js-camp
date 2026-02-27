@@ -15,7 +15,7 @@ function Header() {
   );
 }
 
-export function ContactPage() {
+export default function ContactPage() {
   const [isMessageSubmited, setIsMessageSubmited] = useState(false);
   const [messageError, setMessageError] = useState(false);
 

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSearchParams } from "react-router";
 
 import { SearchFormSection } from "../components/SearchFormSection.jsx";
 import { Pagination } from "../components/Pagination.jsx";
@@ -11,36 +12,34 @@ import { useRouter } from "../hooks/useRouter.js";
 const RESULTS_PER_PAGE = 5;
 
 const useFilters = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [filters, setFilters] = useState(() => {
-    const params = new URLSearchParams(window.location.search);
     return {
-      technology: params.get("technology") || "",
-      location: params.get("location") || "",
-      experienceLevel: params.get("experienceLevel") || "",
+      technology: searchParams.get("technology") || "",
+      location: searchParams.get("location") || "",
+      experienceLevel: searchParams.get("experienceLevel") || "",
     };
   });
 
   const [hasActiveFilters, setHasActiveFilters] = useState(() => {
-    const params = new URLSearchParams(window.location.search);
     if (
-      params.get("technology") ||
-      params.get("type") ||
-      params.get("level") ||
-      params.get("text")
+      searchParams.get("technology") ||
+      searchParams.get("type") ||
+      searchParams.get("level") ||
+      searchParams.get("text")
     ) {
       return true;
     }
     return false;
   });
 
-  const [textToFilter, setTextToFilter] = useState(() => {
-    const params = new URLSearchParams(window.location.search);
-    return params.get("text") || "";
-  });
+  const [textToFilter, setTextToFilter] = useState(
+    () => searchParams.get("text") || "",
+  );
 
   const [currentPage, setCurrentPage] = useState(() => {
-    const params = new URLSearchParams(window.location.search);
-    const page = Number(params.get("page"));
+    const page = Number(searchParams.get("page"));
     return Number.isNaN(page) ? page : 1;
   });
 
@@ -54,21 +53,16 @@ const useFilters = () => {
   const { navigateTo } = useRouter();
 
   useEffect(() => {
-    const params = new URLSearchParams();
+    setSearchParams((params) => {
+      if (textToFilter) params.set("text", textToFilter);
+      if (filters.technology) params.set("technology", filters.technology);
+      if (filters.location) params.set("type", filters.location);
+      if (filters.experienceLevel) params.set("level", filters.experienceLevel);
+      if (currentPage > 1) params.set("page", currentPage);
 
-    if (textToFilter) params.append("text", textToFilter);
-    if (filters.technology) params.append("technology", filters.technology);
-    if (filters.location) params.append("type", filters.location);
-    if (filters.experienceLevel)
-      params.append("level", filters.experienceLevel);
-    if (currentPage > 1) params.append("page", currentPage);
-
-    const newUrl = params.toString()
-      ? `${window.location.pathname}?${params.toString()}`
-      : window.location.pathname;
-
-    navigateTo(newUrl);
-  }, [filters, currentPage, textToFilter, navigateTo]);
+      return params;
+    });
+  }, [filters, currentPage, textToFilter, setSearchParams, navigateTo]);
 
   const totalPages = Math.ceil(total / RESULTS_PER_PAGE);
 
@@ -141,7 +135,7 @@ const useFilters = () => {
   };
 };
 
-export function SearchPage() {
+export default function SearchPage() {
   const {
     jobs,
     total,

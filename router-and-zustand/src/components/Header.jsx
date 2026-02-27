@@ -1,10 +1,11 @@
-import { Link } from "./Link"
+import { NavLink } from "react-router";
+import { Link } from "./Link.jsx";
 
 export function Header() {
   return (
     <header>
-      <Link href="/" style={{ textDecoration: "none"}}>
-        <h1 style={{ color: "#fff"}}>
+      <Link href="/" style={{ textDecoration: "none" }}>
+        <h1 style={{ color: "#fff" }}>
           <svg
             fill="none"
             stroke="currentColor"
@@ -22,7 +23,12 @@ export function Header() {
       </Link>
 
       <nav>
-        <Link href="/search">Empleos</Link>
+        <NavLink
+          className={({ isActive }) => (isActive ? "nav-link-active" : "")}
+          to="/search"
+        >
+          Empleos
+        </NavLink>
       </nav>
     </header>
   );

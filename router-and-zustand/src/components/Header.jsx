@@ -1,5 +1,6 @@
 import { NavLink } from "react-router";
 import { Link } from "./Link.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 
 export function Header() {
   return (
@@ -30,6 +31,18 @@ export function Header() {
           Empleos
         </NavLink>
       </nav>
+
+      <HeaderUserButton />
     </header>
   );
 }
+
+const HeaderUserButton = () => {
+  const { isLoggedIn, login, logout } = useAuth();
+
+  return isLoggedIn ? (
+    <button onClick={logout}>Cerrar sesión</button>
+  ) : (
+    <button onClick={login}>Iniciar sesión</button>
+  );
+};

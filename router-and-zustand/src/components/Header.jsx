@@ -1,8 +1,15 @@
 import { NavLink } from "react-router";
 import { Link } from "./Link.jsx";
-import { useAuth } from "../context/AuthContext.jsx";
+import { useAuthStore } from "../store/authStore.js";
+import { useFavoritesStore } from "../store/favoritesStore.js";
+import { Heart } from "lucide-react";
 
 export function Header() {
+  const { isLoggedIn } = useAuthStore();
+  const { countFavorites } = useFavoritesStore();
+
+  const numberOfFavorites = countFavorites();
+
   return (
     <header>
       <Link href="/" style={{ textDecoration: "none" }}>
@@ -30,6 +37,15 @@ export function Header() {
         >
           Empleos
         </NavLink>
+        {isLoggedIn && (
+          <NavLink
+            className={({ isActive }) => (isActive ? "nav-link-active" : "")}
+            to="/profile"
+          >
+            Profile <Heart size={20} style={{ color: "red" }} />{" "}
+            {numberOfFavorites}
+          </NavLink>
+        )}
       </nav>
 
       <HeaderUserButton />
@@ -38,10 +54,15 @@ export function Header() {
 }
 
 const HeaderUserButton = () => {
-  const { isLoggedIn, login, logout } = useAuth();
+  const { isLoggedIn, login, logout } = useAuthStore();
+  const { clearFavorites } = useFavoritesStore();
 
+  const handleLogout = () => {
+    logout();
+    clearFavorites();
+  };
   return isLoggedIn ? (
-    <button onClick={logout}>Cerrar sesión</button>
+    <button onClick={handleLogout}>Cerrar sesión</button>
   ) : (
     <button onClick={login}>Iniciar sesión</button>
   );

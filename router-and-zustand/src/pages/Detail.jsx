@@ -3,7 +3,9 @@ import { useParams, useNavigate } from "react-router";
 import { Link } from "../components/Link";
 import snarkdown from "snarkdown";
 import styles from "./Detail.module.css";
-import { useAuth } from "../context/AuthContext";
+import { useAuthStore } from "../store/authStore.js";
+import { useFavoritesStore } from "../store/favoritesStore.js";
+import { Heart } from "lucide-react";
 
 function JobSection({ title, content }) {
   const html = snarkdown(content);
@@ -42,16 +44,37 @@ function DetailPageHeader({ job }) {
         </p>
       </header>
       <DetailApplyButton />
+      <DetailFavoriteButton jobId={job.id} />
     </>
   );
 }
 
 function DetailApplyButton() {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn } = useAuthStore();
 
   return (
     <button disabled={!isLoggedIn} className={styles.applyButton}>
       {isLoggedIn ? "Aplicar ahora" : "Inicia sesión para aplicar"}
+    </button>
+  );
+}
+
+function DetailFavoriteButton({ jobId }) {
+  const { isFavorite, toggleFavorite } = useFavoritesStore();
+
+  return (
+    <button
+      className={styles.favoriteButton}
+      onClick={() => toggleFavorite(jobId)}
+      aria-label={
+        isFavorite(jobId) ? "Eliminar de favoritos" : "Agregar a favoritos"
+      }
+    >
+      {isFavorite(jobId) ? (
+        <Heart className={styles.heartFilled} />
+      ) : (
+        <Heart className={styles.heartEmpty} />
+      )}
     </button>
   );
 }

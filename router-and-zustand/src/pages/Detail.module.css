@@ -105,6 +105,42 @@
   background: #666;
 }
 
+.favoriteButton {
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  background-color: rgb(255, 102, 133);
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: rgb(255, 102, 133);
+    border: none;
+    outline: none;
+  }
+
+  &:focus {
+    background-color: rgb(255, 102, 133);
+    outline: none;
+  }
+}
+
+.favoriteButton:hover {
+  color: var(--text-primary);
+  text-decoration: underline;
+}
+
+.heartFilled {
+  fill: red;
+}
+
+.heartEmpty {
+  fill: none;
+  stroke: red;
+}
+
 @media (min-width: 640px) {
   .applyButton {
     width: auto;

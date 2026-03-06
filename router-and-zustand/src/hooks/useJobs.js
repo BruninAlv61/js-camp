@@ -25,7 +25,7 @@ export const useJobs = ({ textToFilter, filters, currentPage }) => {
 
                 const queryParams = params.toString()
 
-                const response = await fetch(`https://jscamp-api.vercel.app/api/jobs?${queryParams}`)
+                const response = await fetch(`http://localhost:1234/jobs?${queryParams}`)
                 const json = await response.json()
 
                 setJobs(json.data)

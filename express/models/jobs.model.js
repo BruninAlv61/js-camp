@@ -1,6 +1,7 @@
 // models/jobs.model.js
 
 import jobs from '../jobs.json' with { type: 'json'}
+import { randomUUID } from 'node:crypto'
 
 export class JobModel {
     static async getAll({ text, type, level, technology, limit = 10, offset = 0 }) {

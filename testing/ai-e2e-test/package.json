@@ -1,0 +1,21 @@
+{
+  "name": "ai-e2e-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "packageManager": "pnpm@10.19.0",
+  "dependencies": {
+    "@ai-sdk/groq": "^3.0.29",
+    "@ai-sdk/openai": "^2.0.98",
+    "@browserbasehq/stagehand": "^3.1.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^25.3.5"
+  }
+}

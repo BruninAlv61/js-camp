@@ -34,7 +34,7 @@ const [code, message]: HttpStatus = [200, 'OK']
 // 6. Usuario (ID, Nombre, Activo)
 type Usuario = [number, string, boolean]
 
-const [id, userName, isActive]: Usuario = [1, 'brunin', true]
+const [idUser, userName, isActiveUser]: Usuario = [1, 'brunin', true]
 
 // 7. Registro de logs (Timestamp, Nivel, Mensaje)
 type LogEntry = [Date, 'INFO' | 'WARN' | 'ERROR', string]

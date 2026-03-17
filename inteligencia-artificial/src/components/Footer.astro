@@ -1,0 +1,159 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="footer" id="contacto">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="logo">dale<span>POS</span></a>
+        <p>Sistema de punto de venta moderno y eficiente para tu negocio.</p>
+      </div>
+
+      <div class="footer-links">
+        <h4>Producto</h4>
+        <ul>
+          <li><a href="#planes">Planes</a></li>
+          <li><a href="#funcionalidades">Funcionalidades</a></li>
+          <li><a href="#integraciones">Integraciones</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links">
+        <h4>Empresa</h4>
+        <ul>
+          <li><a href="#nosotros">Sobre Nosotros</a></li>
+          <li><a href="#blog">Blog</a></li>
+          <li><a href="#carreiras">Carreras</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links">
+        <h4>Soporte</h4>
+        <ul>
+          <li><a href="#ayuda">Centro de Ayuda</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+          <li><a href="#status">Estado del Sistema</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; {currentYear} dale POS. Todos los derechos reservados.</p>
+      <div class="footer-legal">
+        <a href="#privacidad">Política de Privacidad</a>
+        <a href="#terminos">Términos de Servicio</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+    padding: 60px 0 24px;
+    margin-top: 80px;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    margin-bottom: 48px;
+  }
+
+  .footer-brand {
+    max-width: 280px;
+  }
+
+  .logo {
+    font-family: var(--font-mono);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    letter-spacing: -1px;
+    display: inline-block;
+    margin-bottom: 16px;
+  }
+
+  .logo span {
+    color: var(--color-text);
+  }
+
+  .footer-brand p {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .footer-links h4 {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--color-text);
+    margin-bottom: 16px;
+  }
+
+  .footer-links ul {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .footer-links a {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover {
+    color: var(--color-primary);
+  }
+
+  .footer-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-top: 24px;
+    border-top: 1px solid var(--color-border);
+    text-align: center;
+  }
+
+  .footer-bottom p {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+  }
+
+  .footer-legal {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+  }
+
+  .footer-legal a {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    transition: color 0.2s;
+  }
+
+  .footer-legal a:hover {
+    color: var(--color-primary);
+  }
+
+  @media (min-width: 768px) {
+    .footer-grid {
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 60px;
+    }
+
+    .footer-bottom {
+      flex-direction: row;
+      justify-content: space-between;
+      text-align: left;
+    }
+  }
+</style>

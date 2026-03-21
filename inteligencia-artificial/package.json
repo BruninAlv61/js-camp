@@ -1,17 +1,16 @@
 {
-  "name": "dale-pos",
-  "type": "module",
+  "name": "inteligencia-artificial",
   "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "check": "astro check"
+    "backend:watch": "pnpm --filter backend run watch",
+    "frontend:dev": "pnpm --filter frontend run dev",
+    "dev": "pnpm run backend:watch & pnpm run frontend:dev",
+    "build": "pnpm --filter backend build & pnpm --filter frontend build"
   },
-  "dependencies": {
-    "@astrojs/check": "^0.9.8",
-    "astro": "^5.0.0",
-    "typescript": "^5.9.3"
-  }
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.19.0"
 }

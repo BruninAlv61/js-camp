@@ -1,0 +1,21 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js",
+    "watch": "node --watch app.js"
+  },
+  "keywords": [],
+  "author": "brunin",
+  "license": "ISC",
+  "packageManager": "pnpm@10.19.0",
+  "type": "module",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "5.2.1",
+    "openai": "^6.32.0",
+    "zod": "^4.3.6"
+  }
+}

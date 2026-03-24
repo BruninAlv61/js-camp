@@ -6,6 +6,10 @@ import styles from "./Detail.module.css";
 import { useAuthStore } from "../store/authStore.js";
 import { useFavoritesStore } from "../store/favoritesStore.js";
 import { Heart } from "lucide-react";
+import { useAISummary } from "../hooks/useAISummary.js";
+import { Streamdown } from "streamdown";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 function JobSection({ title, content }) {
   const html = snarkdown(content);
@@ -79,6 +83,32 @@ function DetailFavoriteButton({ jobId }) {
   );
 }
 
+function AISummary({ jobId }) {
+  const { summary, loading, generateSummary } = useAISummary(jobId);
+
+  if (summary) {
+    return (
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>✨ Resumen generado por IA</h2>
+
+        <div className={styles.sectionContent}>
+          <Streamdown isAnimating={loading}>{summary}</Streamdown>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <button
+      onClick={generateSummary}
+      disabled={loading}
+      className={styles.applyButton}
+    >
+      {loading ? "Generando resumen..." : "✨ Generar resumen con IA"}
+    </button>
+  );
+}
+
 export default function JobDetail() {
   const { jobId } = useParams();
   const navigate = useNavigate();
@@ -88,7 +118,7 @@ export default function JobDetail() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch(`https://jscamp-api.vercel.app/api/jobs/${jobId}`)
+    fetch(`${API_URL}/jobs/${jobId}`)
       .then((response) => {
         if (!response.ok) {
           navigate("/not-found");
@@ -131,6 +161,7 @@ export default function JobDetail() {
     <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 1rem" }}>
       <DetailPageBreadCrumb job={job} />
       <DetailPageHeader job={job} />
+      <AISummary jobId={job.id} />
 
       <JobSection
         title="Descripción del puesto"
